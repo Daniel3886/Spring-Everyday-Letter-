@@ -24,8 +24,7 @@ public class SpringEmailApplication {
         SpringApplication.run(SpringEmailApplication.class, args);
     }
 
-//    @Scheduled(cron = "*/10 * * * * ?") // Every 10 seconds
-    @Scheduled(cron = "0 0 9 * * ?") // Every day at 9 AM
+    @Scheduled(cron = "0 0 9 * * ?")
     @EventListener(ApplicationReadyEvent.class)
     public void sendMail() {
         scheduleCount++;
