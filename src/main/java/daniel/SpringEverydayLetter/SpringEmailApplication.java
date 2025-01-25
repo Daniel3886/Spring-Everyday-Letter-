@@ -1,9 +1,10 @@
 package daniel.SpringEverydayLetter;
 
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.EventListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,7 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class SpringEmailApplication {
 
     @Autowired
-    public EmailSenderService senderService;
+    private EmailSenderService senderService;
 
     @Autowired
     private ChatGPTService ChatGPTService;
@@ -29,14 +30,10 @@ public class SpringEmailApplication {
     public void sendMail() {
         scheduleCount++;
         try {
-
-            // This is the original code that was commented out
-//            ChatResponse response = ChatGPTService.generateResponse("Tell me a backend java developer tip", "gpt-4o-mini", 0.9);
-//            String emailContent = response.getResult().getOutput().getContent();
-//            senderService.sendEmail("example@gmail.com", "Backend Developer Tip: " + scheduleCount, emailContent);
-
-            // This is example code that was added
-            senderService.sendEmail("example@gmail.com", "Example Subject: " + scheduleCount, "this is body of th email");
+            String toEmail = senderService.getToEmail();
+            ChatResponse response = ChatGPTService.generateResponse("Tell me a backend java developer tip", "gpt-4o-mini", 0.9);
+            String emailContent = response.getResult().getOutput().getContent();
+            senderService.sendSimpleEmail(toEmail, "Backend Developer Tip: " + scheduleCount, emailContent);
         } catch (Exception e) {
             e.printStackTrace();
         }
